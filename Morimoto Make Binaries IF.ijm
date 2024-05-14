@@ -82,11 +82,12 @@ function FixVilli() {
 	getDimensions(width, height, channels, slices, frames);
 	run("8-bit");
 	rename("original");
+	run("Size...", "width=1000 height=1000 depth=1 average interpolation=Bilinear");
 	open(directory + "/binaries/" + binary);
 	rename("binary");
+	run("Size...", "width=1000 height=1000 depth=1 average interpolation=Bilinear");
 	run("Merge Channels...", "c2=binary c4=original create");
 	run("Enhance Contrast...", "saturated=0");
-	run("Size...", "width=1000 height=1000 depth=1 average interpolation=Bilinear");
 	
 	setTool("multipoint");
 	string = "Please use the drawing tools to fix the outline.\nAny small, unconnected pieces will be removed.\nONLY when the outline is completely correct, place a single point selection anywhere.\nDO NOT PRESS OK until finished.";
@@ -103,7 +104,8 @@ function FixVilli() {
 		setBackgroundColor(255, 255, 255);
 		run("Fill Holes");
 		run("Size...", "width="+width+" height="+height+" depth=1 average interpolation=Bilinear");
-		run("Analyze Particles...", "size=100000-Infinity add");
+		run("Convert to Mask");
+		run("Analyze Particles...", "size=10000000-Infinity add");
 		roiManager("select", Array.getSequence(roiManager("count")));
 		if (roiManager("count") > 1) {
 			roiManager("Combine");
